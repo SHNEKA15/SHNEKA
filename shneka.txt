@@ -1,0 +1,274 @@
+import pandas as pd
+df = pd.read_csv("sales_data_1.csv")
+df
+Date	Firm bought from	Buying price	Customer	Selling price	Quantity sold
+0	21/08/23	Vendor6	72.11	Customer7	91.58	44
+1	21/08/23	Vendor4	75.08	Customer7	83.71	17
+2	21/08/23	Vendor7	83.93	Customer2	103.76	15
+3	21/08/23	Vendor7	52.01	Customer3	64.53	7
+4	21/08/23	Vendor2	98.91	Customer5	140.92	1
+...	...	...	...	...	...	...
+65	27/08/23	Vendor4	64.82	Customer6	87.45	18
+66	27/08/23	Vendor8	88.79	Customer3	105.59	5
+67	27/08/23	Vendor5	63.30	Customer5	92.92	32
+68	27/08/23	Vendor5	94.06	Customer5	125.67	4
+69	27/08/23	Vendor5	56.28	Customer6	82.16	1
+70 rows × 6 columns
+
+df['Buying Cost'] = df['Buying price'] * df['Quantity sold']
+df['Selling Cost'] = df['Selling price'] * df['Quantity sold']
+df['Margin'] = df['Selling Cost'] - df['Buying Cost']
+df
+Date	Firm bought from	Buying price	Customer	Selling price	Quantity sold	Buying Cost	Selling Cost	Margin
+0	21/08/23	Vendor6	72.11	Customer7	91.58	44	3172.84	4029.52	856.68
+1	21/08/23	Vendor4	75.08	Customer7	83.71	17	1276.36	1423.07	146.71
+2	21/08/23	Vendor7	83.93	Customer2	103.76	15	1258.95	1556.40	297.45
+3	21/08/23	Vendor7	52.01	Customer3	64.53	7	364.07	451.71	87.64
+4	21/08/23	Vendor2	98.91	Customer5	140.92	1	98.91	140.92	42.01
+...	...	...	...	...	...	...	...	...	...
+65	27/08/23	Vendor4	64.82	Customer6	87.45	18	1166.76	1574.10	407.34
+66	27/08/23	Vendor8	88.79	Customer3	105.59	5	443.95	527.95	84.00
+67	27/08/23	Vendor5	63.30	Customer5	92.92	32	2025.60	2973.44	947.84
+68	27/08/23	Vendor5	94.06	Customer5	125.67	4	376.24	502.68	126.44
+69	27/08/23	Vendor5	56.28	Customer6	82.16	1	56.28	82.16	25.88
+70 rows × 9 columns
+
+total_Margin = df['Margin'].sum()
+total_Buying_Cost = df['Buying Cost'].sum().round(2)
+total_Selling_Cost = df['Selling Cost'].sum()
+Overall_Gross_Margin_in_Percentage = (total_Margin / total_Selling_Cost) * 100
+Overall_Gross_Margin_in_Percentage
+24.633558915188384
+
+groupbuy_Vendor = df.groupby("Firm bought from")[["Margin"]].sum()
+groupbuy_Customer = df.groupby("Customer")[["Margin"]].sum()
+groupbuy_Vendor
+Margin
+Firm bought from	
+Vendor1	1555.59
+Vendor10	3040.62
+Vendor2	1296.98
+Vendor3	6370.67
+Vendor4	6903.31
+Vendor5	1616.14
+Vendor6	1217.95
+Vendor7	4961.05
+Vendor8	253.74
+Vendor9	4266.70
+Vendor 4 is Most profiatable
+
+groupbuy_Customer
+Margin
+Customer	
+Customer1	5310.57
+Customer10	3692.44
+Customer2	4215.67
+Customer3	1055.05
+Customer4	3337.37
+Customer5	1315.28
+Customer6	1930.76
+Customer7	2197.62
+Customer8	6498.91
+Customer9	1929.08
+Customer 3 is the least profitable
+
+Max_Vendor = groupbuy_Vendor['Margin'].max()
+Min_Customer = groupbuy_Customer['Margin'].min()
+Max_Vendor
+6903.31
+Min_Customer
+1055.0499999999997
+groupbuy_Week = df.groupby("Date")[["Margin"]].sum()
+groupbuy_Week
+Margin
+Date	
+21/08/23	6847.34
+22/08/23	3305.35
+23/08/23	4392.47
+24/08/23	4866.03
+25/08/23	3761.94
+26/08/23	5223.16
+27/08/23	3086.46
+21/08/23 was Most profitable & 27/08/23 was Least profitable
+
+df2 = pd.read_csv("sales_data_2.csv")
+df2['Buying Cost'] = df2['Buying price'] * df2['Quantity sold']
+df2['Selling Cost'] = df2['Selling price'] * df2['Quantity sold']
+df2['Margin'] = df2['Selling Cost'] - df2['Buying Cost']
+df2
+Date	Firm bought from	Buying price	Quantity bought	Customer	Selling price	Quantity sold	Buying Cost	Selling Cost	Margin
+0	2023-08-21	Vendor6	72.11	60	Customer7	91.58	44	3172.84	4029.52	856.68
+1	2023-08-21	Vendor4	75.08	92	Customer7	83.71	17	1276.36	1423.07	146.71
+2	2023-08-21	Vendor7	83.93	16	Customer2	103.76	15	1258.95	1556.40	297.45
+3	2023-08-21	Vendor7	52.01	62	Customer3	64.53	7	364.07	451.71	87.64
+4	2023-08-21	Vendor2	98.91	1	Customer5	140.92	1	98.91	140.92	42.01
+...	...	...	...	...	...	...	...	...	...	...
+65	2023-08-27	Vendor4	64.82	28	Customer6	87.45	18	1166.76	1574.10	407.34
+66	2023-08-27	Vendor8	88.79	14	Customer3	105.59	5	443.95	527.95	84.00
+67	2023-08-27	Vendor5	63.30	81	Customer5	92.92	32	2025.60	2973.44	947.84
+68	2023-08-27	Vendor5	94.06	18	Customer5	125.67	4	376.24	502.68	126.44
+69	2023-08-27	Vendor5	56.28	25	Customer6	82.16	1	56.28	82.16	25.88
+70 rows × 10 columns
+
+groupbuy_Date = df2.groupby("Date")[["Margin"]].sum()
+groupbuy_Date
+Margin
+Date	
+2023-08-21	6847.34
+2023-08-22	3305.35
+2023-08-23	4392.47
+2023-08-24	4866.03
+2023-08-25	3761.94
+2023-08-26	5223.16
+2023-08-27	3086.46
+groupbuy_Date['3-day-Mean'] = groupbuy_Date['Margin'].rolling(3).mean()
+
+groupbuy_Date['3-day-Mean'] = groupbuy_Date['Margin'].rolling(3).mean()
+groupbuy_Date
+Margin	3-day-Mean
+Date		
+2023-08-21	6847.34	NaN
+2023-08-22	3305.35	NaN
+2023-08-23	4392.47	4848.386667
+2023-08-24	4866.03	4187.950000
+2023-08-25	3761.94	4340.146667
+2023-08-26	5223.16	4617.043333
+2023-08-27	3086.46	4023.853333
+groupbuy_Date[['Margin', '3-day-Mean']].plot(label='SYA',
+                                   figsize=(16, 8))
+<Axes: xlabel='Date'>
+No description has been provided for this image
+From this graph it is visible that 3-Day trend margin of a week is around 4000 Rs - 4500 Rs
+Vendor_Group = df2.groupby("Firm bought from")[["Margin"]].sum()
+Vendor_Group
+Margin
+Firm bought from	
+Vendor1	1555.59
+Vendor10	3040.62
+Vendor2	1296.98
+Vendor3	6370.67
+Vendor4	6903.31
+Vendor5	1616.14
+Vendor6	1217.95
+Vendor7	4961.05
+Vendor8	253.74
+Vendor9	4266.70
+Customer_Group = df2.groupby("Customer")[["Margin"]].sum()
+Customer_Group
+Margin
+Customer	
+Customer1	5310.57
+Customer10	3692.44
+Customer2	4215.67
+Customer3	1055.05
+Customer4	3337.37
+Customer5	1315.28
+Customer6	1930.76
+Customer7	2197.62
+Customer8	6498.91
+Customer9	1929.08
+df2
+Date	Firm bought from	Buying price	Quantity bought	Customer	Selling price	Quantity sold	Buying Cost	Selling Cost	Margin
+0	2023-08-21	Vendor6	72.11	60	Customer7	91.58	44	3172.84	4029.52	856.68
+1	2023-08-21	Vendor4	75.08	92	Customer7	83.71	17	1276.36	1423.07	146.71
+2	2023-08-21	Vendor7	83.93	16	Customer2	103.76	15	1258.95	1556.40	297.45
+3	2023-08-21	Vendor7	52.01	62	Customer3	64.53	7	364.07	451.71	87.64
+4	2023-08-21	Vendor2	98.91	1	Customer5	140.92	1	98.91	140.92	42.01
+...	...	...	...	...	...	...	...	...	...	...
+65	2023-08-27	Vendor4	64.82	28	Customer6	87.45	18	1166.76	1574.10	407.34
+66	2023-08-27	Vendor8	88.79	14	Customer3	105.59	5	443.95	527.95	84.00
+67	2023-08-27	Vendor5	63.30	81	Customer5	92.92	32	2025.60	2973.44	947.84
+68	2023-08-27	Vendor5	94.06	18	Customer5	125.67	4	376.24	502.68	126.44
+69	2023-08-27	Vendor5	56.28	25	Customer6	82.16	1	56.28	82.16	25.88
+70 rows × 10 columns
+
+df2.describe().round(2)['Buying Cost']
+count      70.00
+mean     1376.02
+std      1649.83
+min        40.63
+25%       327.67
+50%       810.81
+75%      2020.78
+max      9129.16
+Name: Buying Cost, dtype: float64
+df2.describe().round(2)['Selling Cost']
+count       70.00
+mean      1825.78
+std       2292.29
+min         48.75
+25%        406.20
+50%        955.75
+75%       2432.98
+max      12142.16
+Name: Selling Cost, dtype: float64
+df2.describe().round(2)
+Buying price	Quantity bought	Selling price	Quantity sold	Buying Cost	Selling Cost	Margin
+count	70.00	70.00	70.00	70.00	70.00	70.00	70.00
+mean	56.67	50.87	73.91	24.24	1376.02	1825.78	449.75
+std	27.52	28.88	37.99	22.17	1649.83	2292.29	667.53
+min	10.19	1.00	11.65	1.00	40.63	48.75	4.47
+25%	29.90	22.25	38.98	7.00	327.67	406.20	79.25
+50%	60.76	53.50	78.99	17.50	810.81	955.75	179.16
+75%	78.32	70.00	103.40	38.50	2020.78	2432.98	552.76
+max	99.23	99.00	146.76	92.00	9129.16	12142.16	3016.30
+Vendor_Group_Selling = df2.groupby("Firm bought from")[["Selling Cost"]].sum()
+Vendor_Group_Selling
+Selling Cost
+Firm bought from	
+Vendor1	6912.74
+Vendor10	11440.63
+Vendor2	6704.47
+Vendor3	23138.27
+Vendor4	27255.22
+Vendor5	7489.76
+Vendor6	5487.87
+Vendor7	21789.76
+Vendor8	1393.84
+Vendor9	16191.75
+Vendor_Group_Selling.describe().round(2)
+Selling Cost
+count	10.00
+mean	12780.43
+std	8778.63
+min	1393.84
+25%	6756.54
+50%	9465.20
+75%	20390.26
+max	27255.22
+Vendor_Group_Selling[Vendor_Group_Selling["Selling Cost"] < 6756.54]
+Selling Cost
+Firm bought from	
+Vendor2	6704.47
+Vendor6	5487.87
+Vendor8	1393.84
+Vendor_Group_Selling[Vendor_Group_Selling["Selling Cost"] > 20390.26]
+Selling Cost
+Firm bought from	
+Vendor3	23138.27
+Vendor4	27255.22
+Vendor7	21789.76
+
+
+11)"Vendor 4 has to be honored" suggests that SYA needs to carry out its duties or promises to vendor 4. With a profit of 6903.31, vendor 4 is the most lucrative.Hence, based on the cost of goods sold, fulfilling vendor 4 would have an impact on your COGS, which is a crucial factor in determining your gross margin. We need that you purchase goods and services for them at a specific cost. If vendor 4 provides competitive pricing or favorable conditions, your gross margin can increase.
+
+12)Low cost of goods sold (COGS), quality and dependability, supplier exclusivity, demand and price power, long-term cooperation, supply chain efficiency, market circumstances, and economies of scale are all qualities that the company should look for in a vendor.
+((Selling Price-COGS)/Selling Price) × 100% = Gross Margin
+Thus, after taking into account a number of factors, we decide to partner with vendor 6 in order to achieve the maximum gross margin possible. 
+Vendor 6 has set a notional maximum margin of 68.69072% that the company may have from that branch.
+
+13)
+If you increase the price of Sapota by Rs. 1, and the quantity demanded decreases by, for example, 2%, you would have a percentage change in price (
+P) of +1% and a percentage change in quantity demanded (
+Q) of -2%.
+If you decrease the price of Sapota by Rs. 1, and the quantity demanded increases by, for example, 3%, you would have a percentage change in price (
+P) of -1% and a percentage change in quantity demanded (
+Q) of +3%.
+Using these values, you can calculate the price elasticity of Sapota for that branch as follows:
+Price Elasticity of Sapota=% Change in Quantity Demanded / % Change in Price
+Price Elasticity of Sapota= % Change in Price/ % Change in Quantity Demanded
+?
+Price Elasticity of Sapota=-2% /1% 
+=-2
+Price Elasticity of Sapota= 1%/ -2%
+?=-2
